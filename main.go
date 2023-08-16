@@ -7,11 +7,13 @@ import (
 
 func main() {
 	httpClient := httpclient.NewHttpClient(&httpclient.Config{})
-	resp, err := httpClient.Get("https://baidu.com", nil).Do()
-	fmt.Println("err:::::", err)
+	resp, err := httpClient.Get("http://192.168.1.30:6000/v1/test", nil).Do()
+	fmt.Println("err1:::::", err)
 
-	data, _ := resp.GetData()
-	fmt.Println("resp::::", string(data))
+	data, err := resp.GetData()
+	fmt.Println("err2:::::", err)
+	fmt.Println("resp:::::", len(data))
+	fmt.Println("resp:::::", string(data))
 
 	fmt.Println("main")
 }
