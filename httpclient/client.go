@@ -81,7 +81,7 @@ func (c *HttpClient) Do() (*HttpResponse, error) {
 	}
 
 	//response
-	//retData, err := ioutil.ReadAll(resp.Body)
+	//retData, err := io.ReadAll(resp.Body)
 	//if err != nil {
 	//	return nil, err
 	//}
