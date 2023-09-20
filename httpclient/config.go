@@ -28,5 +28,5 @@ var transport = &http.Transport{
 	//IdleConnTimeout:       60 * time.Second, //连接空闲超时
 	//TLSHandshakeTimeout:   5 * time.Second,  //TLS握手超时(默认值:10)
 	//ResponseHeaderTimeout: 1 * time.Second,  //限制读取response header的时间
-	//ExpectContinueTimeout: 1 * time.Second,  //限制client在发送包含Expect:100-continue的header到收到继续发送body的response之间的时间等待。
+	//ExpectContinueTimeout: 1 * time.Second,  //限制client在发送包含Expect:100-continue的header到收到继续发送body的response之间的时间等待
 }

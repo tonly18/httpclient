@@ -85,10 +85,10 @@ func (c *HttpClient) Do() (*HttpResponse, error) {
 	//if err != nil {
 	//	return nil, err
 	//}
-	retData := buffer4096Pool.Get().(*bytes.Buffer)
+	retData := buffer1024Pool.Get().(*bytes.Buffer)
 	retData.Reset()
 	defer func() {
-		buffer4096Pool.Put(retData)
+		buffer1024Pool.Put(retData)
 		c.httpRequest.Request.Body.Close()
 		resp.Body.Close()
 	}()
