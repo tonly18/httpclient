@@ -1,7 +1,7 @@
 package httpclient
 
 import (
-	"io"
+	"errors"
 	"net/http"
 )
 
@@ -27,15 +27,8 @@ func (c *HttpResponse) GetDataFromHeader(key string) string {
 
 func (c *HttpResponse) GetData() ([]byte, error) {
 	defer c.Response.Body.Close()
-
 	if c.Close {
 		return c.Data, nil
 	}
-	c.Close = true
-	if data, err := io.ReadAll(c.Response.Body); err != nil {
-		return nil, err
-	} else {
-		c.Data = data
-		return c.Data, nil
-	}
+	return nil, errors.New("response data happen error")
 }

@@ -16,18 +16,28 @@ type HttpClient struct {
 	httpRequest *Request
 }
 
-func NewHttpClient(config *Config) *HttpClient {
-	if config.TimeOut == 0 {
-		config.TimeOut = time.Second * 5
-	}
+// instance object
+var httpClient *HttpClient
 
-	return &HttpClient{
-		httpClient: &http.Client{
-			Transport: transport,
-			Timeout:   config.TimeOut, //从连接(Dial)到读完response body
-		},
-		httpRequest: nil,
-	}
+func NewHttpClient(config *Config) *HttpClient {
+	once.Do(func() {
+		if config == nil {
+			config = &Config{}
+		}
+		if config.TimeOut == 0 {
+			config.TimeOut = time.Second * 5
+		}
+		httpClient = &HttpClient{
+			httpClient: &http.Client{
+				Transport: transport,
+				Timeout:   config.TimeOut, //从连接(Dial)到读完response body
+			},
+			httpRequest: nil,
+		}
+	})
+
+	//return
+	return httpClient
 }
 
 func (c *HttpClient) Get(rawurl string, params map[string]any) *HttpClient {
@@ -81,10 +91,6 @@ func (c *HttpClient) Do() (*HttpResponse, error) {
 	}
 
 	//response
-	//retData, err := io.ReadAll(resp.Body)
-	//if err != nil {
-	//	return nil, err
-	//}
 	retData := buffer1024Pool.Get().(*bytes.Buffer)
 	retData.Reset()
 	defer func() {
