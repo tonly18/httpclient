@@ -3,12 +3,8 @@ package httpclient
 import (
 	"crypto/tls"
 	"net/http"
-	"sync"
 	"time"
 )
-
-// 全局变量
-var once sync.Once
 
 // config
 type Config struct {

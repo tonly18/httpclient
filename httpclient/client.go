@@ -16,28 +16,21 @@ type HttpClient struct {
 	httpRequest *Request
 }
 
-// instance object
-var httpClient *HttpClient
-
 func NewHttpClient(config *Config) *HttpClient {
-	once.Do(func() {
-		if config == nil {
-			config = &Config{}
-		}
-		if config.TimeOut == 0 {
-			config.TimeOut = time.Second * 5
-		}
-		httpClient = &HttpClient{
-			httpClient: &http.Client{
-				Transport: transport,
-				Timeout:   config.TimeOut, //从连接(Dial)到读完response body
-			},
-			httpRequest: nil,
-		}
-	})
+	if config == nil {
+		config = &Config{}
+	}
+	if config.TimeOut == 0 {
+		config.TimeOut = time.Second * 5
+	}
 
-	//return
-	return httpClient
+	return &HttpClient{
+		httpClient: &http.Client{
+			Transport: transport,
+			Timeout:   config.TimeOut, //从连接(Dial)到读完response body
+		},
+		httpRequest: nil,
+	}
 }
 
 func (c *HttpClient) Get(rawurl string, params map[string]any) *HttpClient {
