@@ -26,7 +26,7 @@ var transport = &http.Transport{
 	MaxIdleConnsPerHost: 1000,  //每个Host最大空闲数(能利用的链接数)(默认值:2)
 	DisableCompression:  true,  //禁止压缩
 
-	ResponseHeaderTimeout: 1 * time.Second, //限制读取response header的时间
+	//ResponseHeaderTimeout: 1 * time.Second, //从client.request执行do之后,到server返回截至
 	//ForceAttemptHTTP2: true,             //强制使用http2(默认值:true)
 	//MaxIdleConns:      100,              //最大空闲数量(默认值:100)
 	//IdleConnTimeout:   90 * time.Second, //连接空闲超时(默认值:90)
