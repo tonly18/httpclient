@@ -1,26 +1,27 @@
-package main
+package httpclient_test
 
 import (
 	"fmt"
-	"httpclient/httpclient"
-	"runtime"
+	"github.com/tonly18/httpclient"
+	"testing"
+	"time"
 )
 
-func main() {
+func TestNewHttpClient(t *testing.T) {
 	httpClient := httpclient.NewHttpClient(&httpclient.Config{})
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 10; i++ {
 		go func() {
 			resp, err := httpClient.NewRequest("POST", "http://192.168.1.45:6000/v1/test", nil).Do()
-			fmt.Println("err1:::::", err)
+			fmt.Println("err:::::", err)
 
 			data, err := resp.GetData()
-			fmt.Println("err2:::::", err)
+			fmt.Println("err:::::", err)
 			fmt.Println("resp:::::", string(data))
-			fmt.Println("nasdfasdasdf:::::", runtime.NumGoroutine())
 			fmt.Println("")
 		}()
-		fmt.Println("i::::::::", i)
 	}
+
+	time.Sleep(2 * time.Second)
 
 	fmt.Println("main")
 }

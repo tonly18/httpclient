@@ -22,10 +22,8 @@ func NewRequest(method, url string, data []byte) (*Request, error) {
 	}, nil
 }
 
-//SetHeader 设置头信息
+// SetHeader 设置头信息
 func (r *Request) SetHeader(params map[string]any) *Request {
-	//二进制流类型
-	//r.Request.Header.Set("Content-Type", "application/octet-stream")
 	for key, value := range params {
 		r.Request.Header.Set(key, cast.ToString(value))
 	}
