@@ -7,12 +7,13 @@ import (
 	"time"
 )
 
-func TestNewHttpClient(t *testing.T) {
+func TestHttpClient(t *testing.T) {
 	httpClient := httpclient.NewHttpClient(&httpclient.Config{})
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 100; i++ {
 		go func() {
-			resp, err := httpClient.NewRequest("POST", "http://192.168.1.45:6000/v1/test", nil).Do()
+			resp, err := httpClient.NewRequest("POST", "http://192.168.1.30:6000/v1/test", nil).Do()
 			fmt.Println("err:::::", err)
+			fmt.Println("resp.header:::::", resp.GetHeaderCode())
 
 			data, err := resp.GetData()
 			fmt.Println("err:::::", err)
@@ -21,7 +22,7 @@ func TestNewHttpClient(t *testing.T) {
 		}()
 	}
 
-	time.Sleep(2 * time.Second)
+	time.Sleep(6 * time.Second)
 
 	fmt.Println("main")
 }

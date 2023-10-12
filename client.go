@@ -1,7 +1,6 @@
 package httpclient
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/spf13/cast"
 	"io"
@@ -12,8 +11,9 @@ import (
 )
 
 type HttpClient struct {
-	httpClient  *http.Client
-	httpRequest *Request
+	httpClient   *http.Client
+	httpRequest  *Request
+	responseSize string //返回值大小:512K、1M、2M、5M
 }
 
 func NewHttpClient(config *Config) *HttpClient {
@@ -21,7 +21,10 @@ func NewHttpClient(config *Config) *HttpClient {
 		config = &Config{}
 	}
 	if config.TimeOut == 0 {
-		config.TimeOut = time.Second * 5
+		config.TimeOut = time.Second * defaultTimeout //请求超时: 默认5秒
+	}
+	if config.ResponseSize == "" {
+		config.ResponseSize = defaultSize //返回值大小: 默认1M
 	}
 
 	return &HttpClient{
@@ -29,7 +32,8 @@ func NewHttpClient(config *Config) *HttpClient {
 			Transport: transport,
 			Timeout:   config.TimeOut, //从连接(Dial)到读完response body
 		},
-		httpRequest: nil,
+		httpRequest:  nil,
+		responseSize: config.ResponseSize,
 	}
 }
 
@@ -84,10 +88,9 @@ func (c *HttpClient) Do() (*HttpResponse, error) {
 	}
 
 	//response
-	retData := buffer1024Pool.Get().(*bytes.Buffer)
-	retData.Reset()
+	retData := poolGet(c.responseSize)
 	defer func() {
-		buffer1024Pool.Put(retData)
+		poolPut(c.responseSize, retData)
 		c.httpRequest.Request.Body.Close()
 		resp.Body.Close()
 	}()
