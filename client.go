@@ -88,20 +88,20 @@ func (c *HttpClient) Do() (*HttpResponse, error) {
 	}
 
 	//response
-	retData := poolGet(c.responseSize)
+	rawBuffer := poolGet(c.responseSize)
 	defer func() {
-		poolPut(c.responseSize, retData)
+		poolPut(c.responseSize, rawBuffer)
 		c.httpRequest.Request.Body.Close()
 		resp.Body.Close()
 	}()
-	if _, err := io.Copy(retData, resp.Body); err != nil {
+	if _, err := io.Copy(rawBuffer, resp.Body); err != nil {
 		return nil, err
 	}
 
 	//return
 	return &HttpResponse{
 		Response: resp,
-		Data:     retData.Bytes(),
+		Data:     rawBuffer.Bytes(),
 		Close:    true,
 	}, nil
 }
