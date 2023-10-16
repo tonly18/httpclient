@@ -8,7 +8,7 @@ import (
 
 const (
 	defaultTimeout = 10
-	defaultSize    = "1M"
+	defaultSize    = "512K"
 )
 
 // config

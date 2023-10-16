@@ -26,10 +26,15 @@ func (r *HttpResponse) GetDataFromHeader(key string) string {
 }
 
 func (r *HttpResponse) GetData() ([]byte, error) {
-	defer r.Response.Body.Close()
-	r.Response.Body.Close()
+	defer func() {
+		if r.Response != nil {
+			r.Response.Body.Close()
+		}
+	}()
+
 	if r.Close {
 		return r.Data, nil
 	}
+
 	return nil, errors.New("response data happen error")
 }

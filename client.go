@@ -96,7 +96,9 @@ func (c *HttpClient) SetHeader(params map[string]any) *HttpClient {
 
 func (c *HttpClient) Do() (*HttpResponse, error) {
 	resp, err := c.httpClient.Do(c.httpRequest.Request)
-	c.httpRequest.Request.Body.Close()
+	if c.httpRequest.Request != nil {
+		c.httpRequest.Request.Body.Close()
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -104,8 +106,8 @@ func (c *HttpClient) Do() (*HttpResponse, error) {
 	//response
 	rawBuffer := poolGet(c.responseSize)
 	defer func() {
-		poolPut(c.responseSize, rawBuffer)
 		resp.Body.Close()
+		poolPut(c.responseSize, rawBuffer)
 	}()
 	if _, err := io.Copy(rawBuffer, resp.Body); err != nil {
 		return nil, err
