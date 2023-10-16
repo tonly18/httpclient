@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	defaultTimeout = 10
+	defaultTimeout = 15
 	defaultSize    = "512K"
 )
 

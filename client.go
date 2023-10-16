@@ -16,7 +16,7 @@ var once sync.Once
 type HttpClient struct {
 	httpClient   *http.Client
 	httpRequest  *Request
-	responseSize string //返回值大小:512K、1M、2M、5M
+	responseSize string //返回值大小:512K、1M
 }
 
 func NewHttpClient(config *Config) *HttpClient {
@@ -27,7 +27,7 @@ func NewHttpClient(config *Config) *HttpClient {
 		config.Transport = transport
 	}
 	if config.TimeOut == 0 {
-		config.TimeOut = time.Second * defaultTimeout //请求超时: 默认5秒
+		config.TimeOut = time.Second * defaultTimeout //请求超时: 默认15秒
 	}
 	if config.ResponseSize == "" {
 		config.ResponseSize = defaultSize //返回值大小: 默认1M
