@@ -30,7 +30,7 @@ func NewHttpClient(config *Config) *HttpClient {
 		config.TimeOut = time.Second * defaultTimeout //请求超时: 默认15秒
 	}
 	if config.ResponseSize == "" {
-		config.ResponseSize = defaultSize //返回值大小: 默认1M
+		config.ResponseSize = defaultSize //返回值大小: 默认512K
 	}
 
 	once.Do(func() {
