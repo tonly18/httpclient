@@ -2,21 +2,27 @@ package httpclient
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
+
+const ctype = "content-type"
 
 type Request struct {
 	Request *http.Request
+	Method  string
 }
 
-func NewRequest(method, url string, params map[string]any) (*Request, error) {
-	var msgbody []byte
-	if len(params) > 0 {
-		msgbody, _ = json.Marshal(params)
+func NewRequest(method, rawurl string, body []byte) (*Request, error) {
+	var err error
+	var req *http.Request
+
+	if body == nil {
+		req, err = http.NewRequest(method, rawurl, nil)
+	} else {
+		req, err = http.NewRequest(method, rawurl, bytes.NewBuffer(body))
 	}
-	req, err := http.NewRequest(method, url, bytes.NewReader(msgbody))
 	if err != nil {
 		return nil, err
 	}
@@ -24,14 +30,29 @@ func NewRequest(method, url string, params map[string]any) (*Request, error) {
 	//return
 	return &Request{
 		Request: req,
+		Method:  method,
 	}, nil
 }
 
 // SetHeader 设置头信息
 func (r *Request) SetHeader(params map[string]any) *Request {
 	for key, value := range params {
+		if strings.Index(strings.ToLower(key), ctype) > -1 {
+			key = ctype
+		}
 		r.Request.Header.Set(key, fmt.Sprintf(`%v`, value))
 	}
 
 	return r
+}
+
+// Prepare 准备request
+func (r *Request) Prepare() *http.Request {
+	if r.Method != http.MethodGet {
+		if r.Request.Header.Get(ctype) == "" {
+			r.Request.Header.Set(ctype, "application/x-www-form-urlencoded")
+		}
+	}
+
+	return r.Request
 }

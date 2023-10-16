@@ -27,7 +27,7 @@ func (r *HttpResponse) GetDataFromHeader(key string) string {
 
 func (r *HttpResponse) GetData() ([]byte, error) {
 	defer func() {
-		if r.Response != nil {
+		if r.Response.Body != nil {
 			r.Response.Body.Close()
 		}
 	}()

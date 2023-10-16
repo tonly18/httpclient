@@ -5,7 +5,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"strings"
 	"sync"
 	"time"
 )
@@ -52,11 +51,11 @@ func NewHttpClient(config *Config) *HttpClient {
 
 func (c *HttpClient) Get(rawurl string, params map[string]any) *HttpClient {
 	if len(params) > 0 {
-		urlValue := url.Values{}
+		urlParams := url.Values{}
 		for k, v := range params {
-			urlValue.Set(k, fmt.Sprintf(`%v`, v))
+			urlParams.Set(k, fmt.Sprintf(`%v`, v))
 		}
-		rawurl = fmt.Sprintf(`%v?%v`, rawurl, urlValue.Encode())
+		rawurl = fmt.Sprintf(`%v?%v`, rawurl, urlParams.Encode())
 	}
 	req, err := NewRequest(http.MethodGet, rawurl, nil)
 	if err != nil {
@@ -67,8 +66,8 @@ func (c *HttpClient) Get(rawurl string, params map[string]any) *HttpClient {
 	return c
 }
 
-func (c *HttpClient) Post(rawurl string, params map[string]any) *HttpClient {
-	req, err := NewRequest(http.MethodPost, rawurl, params)
+func (c *HttpClient) Post(rawurl string, body []byte) *HttpClient {
+	req, err := NewRequest(http.MethodPost, rawurl, body)
 	if err != nil {
 		return nil
 	}
@@ -77,8 +76,8 @@ func (c *HttpClient) Post(rawurl string, params map[string]any) *HttpClient {
 	return c
 }
 
-func (c *HttpClient) NewRequest(method, url string, params map[string]any) *HttpClient {
-	if req, err := NewRequest(strings.ToUpper(method), url, params); err != nil {
+func (c *HttpClient) NewRequest(method, rawurl string, body []byte) *HttpClient {
+	if req, err := NewRequest(method, rawurl, body); err != nil {
 		return nil
 	} else {
 		c.httpRequest = req
@@ -95,8 +94,8 @@ func (c *HttpClient) SetHeader(params map[string]any) *HttpClient {
 }
 
 func (c *HttpClient) Do() (*HttpResponse, error) {
-	resp, err := c.httpClient.Do(c.httpRequest.Request)
-	if c.httpRequest.Request != nil {
+	resp, err := c.httpClient.Do(c.httpRequest.Prepare())
+	if c.httpRequest.Request.Body != nil {
 		c.httpRequest.Request.Body.Close()
 	}
 	if err != nil {
