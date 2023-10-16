@@ -2,7 +2,8 @@ package httpclient
 
 import (
 	"bytes"
-	"github.com/spf13/cast"
+	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -10,8 +11,12 @@ type Request struct {
 	Request *http.Request
 }
 
-func NewRequest(method, url string, data []byte) (*Request, error) {
-	req, err := http.NewRequest(method, url, bytes.NewReader(data))
+func NewRequest(method, url string, params map[string]any) (*Request, error) {
+	var msgbody []byte
+	if len(params) > 0 {
+		msgbody, _ = json.Marshal(params)
+	}
+	req, err := http.NewRequest(method, url, bytes.NewReader(msgbody))
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +30,7 @@ func NewRequest(method, url string, data []byte) (*Request, error) {
 // SetHeader 设置头信息
 func (r *Request) SetHeader(params map[string]any) *Request {
 	for key, value := range params {
-		r.Request.Header.Set(key, cast.ToString(value))
+		r.Request.Header.Set(key, fmt.Sprintf(`%v`, value))
 	}
 
 	return r

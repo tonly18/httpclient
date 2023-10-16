@@ -7,12 +7,13 @@ import (
 )
 
 const (
-	defaultTimeout = 5
+	defaultTimeout = 10
 	defaultSize    = "1M"
 )
 
 // config
 type Config struct {
+	Transport     *http.Transport
 	CheckRedirect func(req *http.Request, via []*http.Request) error
 	Jar           http.CookieJar
 	TimeOut       time.Duration

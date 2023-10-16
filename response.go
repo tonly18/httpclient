@@ -17,18 +17,19 @@ func NewHttpResponse(response *http.Response) *HttpResponse {
 	}
 }
 
-func (c *HttpResponse) GetHeaderCode() int {
-	return c.Response.StatusCode
+func (r *HttpResponse) GetHeaderCode() int {
+	return r.Response.StatusCode
 }
 
-func (c *HttpResponse) GetDataFromHeader(key string) string {
-	return c.Response.Header.Get(key)
+func (r *HttpResponse) GetDataFromHeader(key string) string {
+	return r.Response.Header.Get(key)
 }
 
-func (c *HttpResponse) GetData() ([]byte, error) {
-	defer c.Response.Body.Close()
-	if c.Close {
-		return c.Data, nil
+func (r *HttpResponse) GetData() ([]byte, error) {
+	defer r.Response.Body.Close()
+	r.Response.Body.Close()
+	if r.Close {
+		return r.Data, nil
 	}
 	return nil, errors.New("response data happen error")
 }
