@@ -9,7 +9,7 @@ import (
 const (
 	defaultTimeout = 15
 	defaultSize    = "512K"
-	ctype          = "content-type"
+	contentType    = "content-type"
 )
 
 // config
