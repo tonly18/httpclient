@@ -73,6 +73,7 @@ func TestClientPost(t *testing.T) {
 	resp, err := httpClient.NewRequest(http.MethodPost, rawurl, bodyByte).SetHeader(map[string]any{
 		//"content-type": "application/x-www-form-urlencoded",
 		//"content-type": "application/json",
+		//"content-type": "application/octet-stream",
 		"proxy_id":  110,
 		"server_id": 22,
 		"client_ip": "192.168.1.48",

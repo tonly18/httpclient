@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-const ctype = "content-type"
-
 type Request struct {
 	Request *http.Request
 	Method  string
