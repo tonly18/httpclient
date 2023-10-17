@@ -46,7 +46,7 @@ func (r *Request) SetHeader(params map[string]any) *Request {
 
 // Prepare 准备request
 func (r *Request) Prepare() *http.Request {
-	if r.Method != http.MethodGet {
+	if r.Method == http.MethodPost || r.Method == http.MethodPut || r.Method == http.MethodPatch {
 		if r.Request.Header.Get(contentType) == "" {
 			r.Request.Header.Set(contentType, "application/x-www-form-urlencoded")
 		}
