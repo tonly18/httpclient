@@ -14,7 +14,7 @@ var once sync.Once
 
 type HttpClient struct {
 	httpClient   *http.Client
-	httpRequest  *Request
+	httpRequest  *HttpRequest
 	responseSize string //返回值大小:512K、1M
 }
 

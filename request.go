@@ -7,12 +7,12 @@ import (
 	"strings"
 )
 
-type Request struct {
+type HttpRequest struct {
 	Request *http.Request
 	Method  string
 }
 
-func NewRequest(method, rawurl string, body []byte) (*Request, error) {
+func NewRequest(method, rawurl string, body []byte) (*HttpRequest, error) {
 	var err error
 	var req *http.Request
 
@@ -26,14 +26,14 @@ func NewRequest(method, rawurl string, body []byte) (*Request, error) {
 	}
 
 	//return
-	return &Request{
+	return &HttpRequest{
 		Request: req,
 		Method:  method,
 	}, nil
 }
 
 // SetHeader 设置头信息
-func (r *Request) SetHeader(params map[string]any) *Request {
+func (r *HttpRequest) SetHeader(params map[string]any) *HttpRequest {
 	for key, value := range params {
 		if strings.Index(strings.ToLower(key), contentType) > -1 {
 			key = contentType
@@ -45,7 +45,7 @@ func (r *Request) SetHeader(params map[string]any) *Request {
 }
 
 // Prepare 准备request
-func (r *Request) Prepare() *http.Request {
+func (r *HttpRequest) Prepare() *http.Request {
 	if r.Method == http.MethodPost || r.Method == http.MethodPut || r.Method == http.MethodPatch {
 		if r.Request.Header.Get(contentType) == "" {
 			r.Request.Header.Set(contentType, "application/x-www-form-urlencoded")
