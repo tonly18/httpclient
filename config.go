@@ -8,7 +8,6 @@ import (
 
 const (
 	defaultTimeout = 15
-	defaultSize    = "512K"
 	contentType    = "content-type"
 )
 
@@ -18,7 +17,6 @@ type Config struct {
 	CheckRedirect func(req *http.Request, via []*http.Request) error
 	Jar           http.CookieJar
 	TimeOut       time.Duration
-	ResponseSize  string
 }
 
 // http.Transport内都会维护一个自己的空闲连接池,如果每个client都创建一个新的http.Transport,就会导致底层的TCP连接无法复用.
@@ -35,7 +33,7 @@ var transport = &http.Transport{
 	DisableCompression:    true,             //禁止压缩
 	ExpectContinueTimeout: 1 * time.Second,  //(默认值:1)限制client在发送包含Expect:100-continue的header到收到继续发送body的response之间的时间等待
 
-	//ResponseHeaderTimeout: 10 * time.Second, //从client.request执行do之后,到server返回截至
-	//ForceAttemptHTTP2: true,             //强制使用http2(默认值:true)
+	//ResponseHeaderTimeout: 10 * time.Second,	//从client.request执行do之后,到server返回截至
+	//ForceAttemptHTTP2: true,             		//强制使用http2(默认值:true)
 	//TLSHandshakeTimeout:   10 * time.Second,  //TLS握手超时(默认值:10)
 }

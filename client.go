@@ -13,9 +13,8 @@ var client *http.Client
 var once sync.Once
 
 type HttpClient struct {
-	httpClient   *http.Client
-	httpRequest  *HttpRequest
-	responseSize string //返回值大小:512K、1M
+	httpClient  *http.Client
+	httpRequest *HttpRequest
 }
 
 func NewHttpClient(config *Config) *HttpClient {
@@ -27,9 +26,6 @@ func NewHttpClient(config *Config) *HttpClient {
 	}
 	if config.TimeOut == 0 {
 		config.TimeOut = time.Second * defaultTimeout //请求超时: 默认15秒
-	}
-	if config.ResponseSize == "" {
-		config.ResponseSize = defaultSize //返回值大小: 默认512K
 	}
 
 	once.Do(func() {
@@ -43,9 +39,8 @@ func NewHttpClient(config *Config) *HttpClient {
 
 	//return
 	return &HttpClient{
-		httpClient:   client,
-		httpRequest:  nil,
-		responseSize: config.ResponseSize,
+		httpClient:  client,
+		httpRequest: nil,
 	}
 }
 
@@ -103,10 +98,10 @@ func (c *HttpClient) Do() (*HttpResponse, error) {
 	}
 
 	//response
-	rawBuffer := poolGet(c.responseSize)
+	rawBuffer := poolGet()
 	defer func() {
 		resp.Body.Close()
-		poolPut(c.responseSize, rawBuffer)
+		poolPut(rawBuffer)
 	}()
 	if _, err := io.Copy(rawBuffer, resp.Body); err != nil {
 		return nil, err

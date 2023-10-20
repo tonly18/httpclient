@@ -5,38 +5,24 @@ import (
 	"sync"
 )
 
-var poolBuffer512K = sync.Pool{
+const maxSize = 1 << 16 //64KiB
+
+var poolBuffer = sync.Pool{
 	New: func() any {
-		return bytes.NewBuffer(make([]byte, 0, 1024*512))
+		return bytes.NewBuffer(make([]byte, 0, 512))
 	},
 }
 
-var poolBuffer1M = sync.Pool{
-	New: func() any {
-		return bytes.NewBuffer(make([]byte, 0, 1024*1024))
-	},
+func poolGet() *bytes.Buffer {
+	buffer := poolBuffer.Get().(*bytes.Buffer)
+	buffer.Reset()
+
+	return buffer
 }
 
-func poolGet(size string) *bytes.Buffer {
-	if size == "512K" {
-		buffer := poolBuffer512K.Get().(*bytes.Buffer)
-		buffer.Reset()
-		return buffer
+func poolPut(buffer *bytes.Buffer) {
+	if buffer.Cap() > maxSize {
+		return
 	}
-	if size == "1M" {
-		buffer := poolBuffer1M.Get().(*bytes.Buffer)
-		buffer.Reset()
-		return buffer
-	}
-
-	return nil
-}
-
-func poolPut(size string, buffer *bytes.Buffer) {
-	if size == "512K" {
-		poolBuffer512K.Put(buffer)
-	}
-	if size == "1M" {
-		poolBuffer1M.Put(buffer)
-	}
+	poolBuffer.Put(buffer)
 }
