@@ -35,7 +35,7 @@ func NewRequest(method, rawurl string, body []byte) (*HttpRequest, error) {
 // SetHeader 设置头信息
 func (r *HttpRequest) SetHeader(params map[string]any) *HttpRequest {
 	for key, value := range params {
-		if strings.Index(strings.ToLower(key), strings.ToLower(contentType)) > -1 {
+		if strings.ToLower(key) == strings.ToLower(contentType) {
 			key = contentType
 		}
 		r.Request.Header.Set(key, fmt.Sprintf(`%v`, value))
