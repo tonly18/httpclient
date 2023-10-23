@@ -16,7 +16,7 @@ func NewRequest(method, rawurl string, body []byte) (*HttpRequest, error) {
 	var err error
 	var req *http.Request
 
-	if body == nil {
+	if len(body) == 0 {
 		req, err = http.NewRequest(method, rawurl, nil)
 	} else {
 		req, err = http.NewRequest(method, rawurl, bytes.NewBuffer(body))

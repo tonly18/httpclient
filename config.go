@@ -11,7 +11,7 @@ const (
 	contentType    = "Content-Type"
 )
 
-// config
+// config struct
 type Config struct {
 	Transport     *http.Transport
 	CheckRedirect func(req *http.Request, via []*http.Request) error

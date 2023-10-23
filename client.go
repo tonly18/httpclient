@@ -1,23 +1,23 @@
 package httpclient
 
 import (
-	"fmt"
-	"io"
 	"net/http"
-	"net/url"
 	"sync"
 	"time"
 )
 
-var client *http.Client
 var once sync.Once
+var rawclient *rawClient
 
-type HttpClient struct {
-	httpClient  *http.Client
-	httpRequest *HttpRequest
+type rawClient struct {
+	client *http.Client
 }
 
-func NewHttpClient(config *Config) *HttpClient {
+func NewClient(config *Config) *rawClient {
+	if rawclient != nil {
+		return rawclient
+	}
+
 	if config == nil {
 		config = &Config{}
 	}
@@ -25,92 +25,63 @@ func NewHttpClient(config *Config) *HttpClient {
 		config.Transport = transport
 	}
 	if config.TimeOut == 0 {
-		config.TimeOut = time.Second * defaultTimeout //请求超时: 默认15秒
+		config.TimeOut = time.Second * defaultTimeout
 	}
 
 	once.Do(func() {
-		client = &http.Client{
-			Transport:     config.Transport,
-			CheckRedirect: config.CheckRedirect,
-			Jar:           config.Jar,
-			Timeout:       config.TimeOut, //从连接(Dial)到读完response body
+		rawclient = &rawClient{
+			client: &http.Client{
+				Transport:     config.Transport,
+				CheckRedirect: config.CheckRedirect,
+				Jar:           config.Jar,
+				Timeout:       config.TimeOut, //从连接(Dial)到读完response body
+			},
 		}
 	})
 
 	//return
-	return &HttpClient{
-		httpClient:  client,
-		httpRequest: nil,
-	}
+	return rawclient
 }
 
-func (c *HttpClient) Get(rawurl string, params map[string]any) *HttpClient {
-	if len(params) > 0 {
-		urlParams := url.Values{}
-		for k, v := range params {
-			urlParams.Set(k, fmt.Sprintf(`%v`, v))
-		}
-		rawurl = fmt.Sprintf(`%v?%v`, rawurl, urlParams.Encode())
-	}
+// GET请求
+func (c *rawClient) Get(rawurl string, params map[string]any) *httpClient {
+	rawurl = queryEncode(rawurl, params)
 	req, err := NewRequest(http.MethodGet, rawurl, nil)
 	if err != nil {
 		return nil
 	}
-	c.httpRequest = req
 
-	return c
+	//return
+	return &httpClient{
+		httpClient:  c.client,
+		httpRequest: req,
+	}
 }
 
-func (c *HttpClient) Post(rawurl string, body []byte) *HttpClient {
+// POST请求
+func (c *rawClient) Post(rawurl string, body []byte) *httpClient {
 	req, err := NewRequest(http.MethodPost, rawurl, body)
 	if err != nil {
 		return nil
 	}
-	c.httpRequest = req
-
-	return c
-}
-
-func (c *HttpClient) NewRequest(method, rawurl string, body []byte) *HttpClient {
-	if req, err := NewRequest(method, rawurl, body); err != nil {
-		return nil
-	} else {
-		c.httpRequest = req
-	}
-
-	return c
-}
-
-func (c *HttpClient) SetHeader(params map[string]any) *HttpClient {
-	c.httpRequest.SetHeader(params)
 
 	//return
-	return c
+	return &httpClient{
+		httpClient:  c.client,
+		httpRequest: req,
+	}
 }
 
-func (c *HttpClient) Do() (*HttpResponse, error) {
-	resp, err := c.httpClient.Do(c.httpRequest.Prepare())
-	if c.httpRequest.Request.Body != nil {
-		c.httpRequest.Request.Body.Close()
-	}
+// http请求
+func (c *rawClient) NewRequest(method, rawurl string, body []byte) *httpClient {
+	req, err := NewRequest(method, rawurl, body)
 	if err != nil {
-		return nil, err
-	}
-
-	//response
-	rawBuffer := poolGet()
-	defer func() {
-		resp.Body.Close()
-		poolPut(rawBuffer)
-	}()
-	if _, err := io.Copy(rawBuffer, resp.Body); err != nil {
-		return nil, err
+		return nil
 	}
 
 	//return
-	return &HttpResponse{
-		Response: resp,
-		Data:     rawBuffer.Bytes(),
-		Close:    true,
-	}, nil
+	return &httpClient{
+		httpClient:  c.client,
+		httpRequest: req,
+	}
 }

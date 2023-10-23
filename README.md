@@ -1,26 +1,46 @@
 # httpclient
-http client是模拟http请求的包
+httpclient是模拟http请求包
 
 
+
+## Installation
+
+```bash
 go get -u github.com/tonly18/httpclient
+```
+
+## Getting Started
+
+### Simple httpclient Example
+
+For simple httpclient, import the global httpclient package **github.com/tonly18/httpclient**
 
 
-### 注：<br>
-#### 一个httpclient对应一个request，如果需要多次循环调用，则需要每次新建httpclient。
-#### 例如:
 
 ```go
 package main
 
 import (
+	"fmt"
 	"github.com/tonly18/httpclient"
+	"log"
 )
 
 func main() {
-	for i:=0; i<10; i++{
-		httpClient := httpclient.NewHttpClient(&httpclient.Config{})
-		httpClient.Get("http://www.baidu.com", nil).Do()
+	httpClient := httpclient.NewClient(&httpclient.Config{})
+	for i := 0; i < 10; i++ {
+		resp, err := httpClient.Get("http://www.baidu.com", nil).SetHeader(map[string]any{
+			"name": "Sam",
+			"age":  18,
+		}).Do()
+
+		if err != nil {
+			log.Fatalf(`%v`, err)
+		}
 		
+		data, _ := resp.GetData()
+		fmt.Println("resp:", string(data))
+
 	}
 }
 ```
