@@ -12,30 +12,33 @@ import (
 func TestHttpClient(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		go func() {
-			httpClient := httpclient.NewHttpClient(&httpclient.Config{})
-			resp, err := httpClient.Get("http://localhost:8080/n/v1/test", map[string]any{
-				"fruit": "mango-123",
-			}).SetHeader(map[string]any{
-				"proxy_id":  100,
-				"server_id": 2,
-				"client_ip": "192.168.1.48",
-				"user_id":   21,
-				"trace_id":  15821793512,
-			}).Do()
-			fmt.Println("err:::::", err)
-			fmt.Println("resp.header:::::", resp.GetHeaderCode())
+			for x := 0; x < 1000; x++ {
+				httpClient := httpclient.NewHttpClient(&httpclient.Config{})
+				resp, err := httpClient.Get("http://localhost:8080/n/v1/test", map[string]any{
+					"fruit": "mango-123",
+				}).SetHeader(map[string]any{
+					"proxy_id":  100,
+					"server_id": 2,
+					"client_ip": "192.168.1.48",
+					"user_id":   21,
+					"trace_id":  15821793512,
+				}).Do()
+				fmt.Println("err:::::", err)
+				fmt.Println("resp.header:::::", resp.GetHeaderCode())
 
-			data, err := resp.GetData()
-			fmt.Println("err:::::", err)
-			fmt.Println("resp:::::", string(data))
-			fmt.Println("")
-			time.Sleep(time.Nanosecond * 1)
+				data, err := resp.GetData()
+				fmt.Println("err:::::", err)
+				fmt.Println("resp:::::", string(data))
+				fmt.Println("")
+
+				time.Sleep(time.Nanosecond * 100)
+			}
 		}()
 	}
 
-	time.Sleep(6 * time.Second)
+	time.Sleep(40 * time.Second)
 
-	fmt.Println("main")
+	fmt.Println("======================main======================")
 }
 
 func TestClientGet(t *testing.T) {

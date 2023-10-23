@@ -8,7 +8,7 @@ import (
 
 const (
 	defaultTimeout = 15
-	contentType    = "content-type"
+	contentType    = "Content-Type"
 )
 
 // config
