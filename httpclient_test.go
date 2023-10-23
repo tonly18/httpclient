@@ -37,8 +37,8 @@ func TestHttpClient(t *testing.T) {
 					fmt.Println("resp:::::", string(data))
 
 					fmt.Println("goroutineNum:", runtime.NumGoroutine())
+					fmt.Println("")
 				}
-				fmt.Println("")
 
 				time.Sleep(time.Nanosecond * 1000)
 			}
