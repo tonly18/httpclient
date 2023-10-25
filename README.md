@@ -1,5 +1,5 @@
 # httpclient
-httpclient是模拟http请求包
+httpclient是模拟http请求包，支持链接复用，使用缓存池性能更好。
 
 
 
