@@ -11,6 +11,13 @@ const (
 	contentType    = "Content-Type"
 )
 
+// 没有消息体返回的请求
+var noResponseBodyMethod map[string]bool = map[string]bool{
+	http.MethodConnect: true,
+	http.MethodHead:    true,
+	http.MethodTrace:   true,
+}
+
 // config struct
 type Config struct {
 	Transport     *http.Transport

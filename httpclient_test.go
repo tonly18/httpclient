@@ -137,3 +137,24 @@ func TestClientRequest(t *testing.T) {
 
 	fmt.Println("main")
 }
+
+func TestClientHead(t *testing.T) {
+
+	rawurl := "http://localhost:8080/n/v1/test/post?sex=3"
+	httpClient := httpclient.NewClient(&httpclient.Config{})
+	resp, err := httpClient.NewRequest(http.MethodHead, rawurl, nil).SetHeader(map[string]any{
+		"proxy_id":  110,
+		"server_id": 22,
+		"client_ip": "192.168.1.48",
+		"user_id":   21,
+		"trace_id":  15821793512,
+	}).Do()
+	if err != nil {
+		log.Fatal("err:::::::", err)
+	}
+	data, err := resp.GetData()
+	fmt.Println("err:::::::::::", err)
+	fmt.Println("resp.data:::::", string(data))
+
+	fmt.Println("main")
+}
