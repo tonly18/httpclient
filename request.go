@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -23,6 +24,9 @@ func NewRequest(method, rawurl string, body []byte) (*HttpRequest, error) {
 	}
 	if err != nil {
 		return nil, err
+	}
+	if len(body) > 0 {
+		req.Header.Set("Content-Length", strconv.Itoa(len(body)))
 	}
 
 	//return
@@ -48,7 +52,7 @@ func (r *HttpRequest) SetHeader(params map[string]any) *HttpRequest {
 func (r *HttpRequest) Prepare() *http.Request {
 	if r.Method == http.MethodPost || r.Method == http.MethodPut || r.Method == http.MethodPatch {
 		if r.Request.Header.Get(contentType) == "" {
-			r.Request.Header.Set(contentType, "application/x-www-form-urlencoded")
+			r.Request.Header.Set(contentType, "text/plain; charset=utf-8")
 		}
 	}
 

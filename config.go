@@ -12,7 +12,7 @@ const (
 )
 
 // 没有消息体返回的请求
-var noResponseBodyMethod map[string]bool = map[string]bool{
+var noResponseBodyMethods map[string]bool = map[string]bool{
 	http.MethodConnect: true,
 	http.MethodHead:    true,
 	http.MethodTrace:   true,

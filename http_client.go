@@ -25,20 +25,13 @@ func (c *httpClient) Do() (*HttpResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
 	//response
-	if _, ok := noResponseBodyMethod[c.httpRequest.Method]; ok {
-		return &HttpResponse{
-			Response: resp,
-			Data:     nil,
-			Close:    true,
-		}, nil
-	}
-
-	//response 读取body
 	rawBuffer := poolGet()
-	defer poolPut(rawBuffer)
+	defer func() {
+		poolPut(rawBuffer)
+		_ = resp.Body.Close()
+	}()
 	if _, err := io.Copy(rawBuffer, resp.Body); err != nil {
 		return nil, err
 	}
