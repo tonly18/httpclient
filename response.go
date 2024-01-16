@@ -9,6 +9,7 @@ type HttpResponse struct {
 	Response *http.Response
 	Data     []byte
 	Close    bool
+	Error    error
 }
 
 func NewHttpResponse(response *http.Response) *HttpResponse {
@@ -23,6 +24,15 @@ func (r *HttpResponse) GetHeaderCode() int {
 
 func (r *HttpResponse) GetDataFromHeader(key string) string {
 	return r.Response.Header.Get(key)
+}
+
+func (r *HttpResponse) Cookie(name string) *http.Cookie {
+	for _, v := range r.Response.Cookies() {
+		if v.Name == name {
+			return v
+		}
+	}
+	return nil
 }
 
 func (r *HttpResponse) GetData() ([]byte, error) {

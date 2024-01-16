@@ -46,7 +46,7 @@ func TestHttpClient(t *testing.T) {
 	}
 
 	fmt.Println("goroutineNum-2:", runtime.NumGoroutine())
-	time.Sleep(30 * time.Second)
+	time.Sleep(15 * time.Second)
 
 	fmt.Println("======================main======================")
 }
@@ -157,6 +157,38 @@ func TestClientRequest(t *testing.T) {
 	data, err := resp.GetData()
 	fmt.Println("err:::::", err)
 	fmt.Println("resp:::::", string(data))
+
+	fmt.Println("main")
+}
+
+func TestClientRequestAsync(t *testing.T) {
+	rawurl := "http://192.168.1.30:8080/n/v1/test"
+	httpClient := httpclient.NewClient(&httpclient.Config{})
+	result := make(chan *httpclient.HttpResponse, 1)
+	httpClient.Get(rawurl, map[string]any{
+		"fruit": "mango-123",
+	}).SetHeader(map[string]any{
+		"proxy_id":  100,
+		"server_id": 2,
+		"client_ip": "192.168.1.48",
+		"user_id":   21,
+		"trace_id":  15821793512,
+	}).DoAsync(result)
+	fmt.Println("++++++main-1++++++")
+
+	data := <-result
+	fmt.Println("data.err::::::::::", data.Error)
+	fmt.Println("data.Data:::::::::", string(data.Data))
+
+	fmt.Println("++++++main++++++")
+	//time.Sleep(5 * time.Second)
+
+	//if err != nil {
+	//	log.Fatal("err:::::::", err)
+	//}
+	//data, err := resp.GetData()
+	//fmt.Println("err:::::", err)
+	//fmt.Println("resp:::::", string(data))
 
 	fmt.Println("main")
 }

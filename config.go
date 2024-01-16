@@ -7,8 +7,9 @@ import (
 )
 
 const (
-	defaultTimeout = 15
-	contentType    = "Content-Type"
+	defaultHttpRequestTimeout = 15
+	asyncTimeout              = 15
+	contentType               = "Content-Type"
 )
 
 // 没有消息体返回的请求

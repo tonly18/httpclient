@@ -25,7 +25,7 @@ func NewClient(config *Config) *rawClient {
 		config.Transport = transport
 	}
 	if config.TimeOut == 0 {
-		config.TimeOut = time.Second * defaultTimeout
+		config.TimeOut = time.Second * defaultHttpRequestTimeout
 	}
 
 	once.Do(func() {

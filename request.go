@@ -48,6 +48,15 @@ func (r *HttpRequest) SetHeader(params map[string]any) *HttpRequest {
 	return r
 }
 
+// AddCookie 设置cookie
+func (r *HttpRequest) AddCookie(cookies []*http.Cookie) *HttpRequest {
+	for _, v := range cookies {
+		r.Request.AddCookie(v)
+	}
+
+	return r
+}
+
 // Prepare 准备request
 func (r *HttpRequest) Prepare() *http.Request {
 	if r.Method == http.MethodPost || r.Method == http.MethodPut || r.Method == http.MethodPatch {
