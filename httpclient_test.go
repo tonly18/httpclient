@@ -28,6 +28,7 @@ func TestHttpClient(t *testing.T) {
 				}).Do()
 				if err != nil {
 					fmt.Println("err:::::", err)
+				} else {
 					fmt.Println("resp.header:::::", resp.GetHeaderCode())
 				}
 
