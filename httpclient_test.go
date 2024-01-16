@@ -30,15 +30,14 @@ func TestHttpClient(t *testing.T) {
 					fmt.Println("err:::::", err)
 				} else {
 					fmt.Println("resp.header:::::", resp.GetHeaderCode())
-				}
+					data, err := resp.GetData()
+					if m%10 == 0 {
+						fmt.Println("err:::::", err)
+						fmt.Println("resp:::::", string(data))
 
-				data, err := resp.GetData()
-				if m%10 == 0 {
-					fmt.Println("err:::::", err)
-					fmt.Println("resp:::::", string(data))
-
-					fmt.Println("goroutineNum:", runtime.NumGoroutine())
-					fmt.Println("")
+						fmt.Println("goroutineNum:", runtime.NumGoroutine())
+						fmt.Println("")
+					}
 				}
 
 				time.Sleep(time.Nanosecond * 1000)
