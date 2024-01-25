@@ -1,11 +1,8 @@
 package httpclient
 
 import (
-	"errors"
-	"fmt"
 	"io"
 	"net/http"
-	"time"
 )
 
 type httpClient struct {
@@ -62,24 +59,4 @@ func (c *httpClient) DoNew() *HttpResponse {
 		Data:     rawBuffer.Bytes(),
 		Close:    true,
 	}
-}
-
-// 测试阶段,暂匆使用
-func (c *httpClient) DoAsync(params chan<- *HttpResponse) {
-	go func() {
-		ch := make(chan struct{}, 1)
-		go func() {
-			params <- c.DoNew()
-			ch <- struct{}{}
-		}()
-
-		select {
-		case <-time.After(asyncTimeout * time.Second):
-			params <- &HttpResponse{
-				Error: errors.New("http request has timed out"),
-			}
-		case <-ch:
-		}
-	}()
-	fmt.Println("DoAsync========")
 }

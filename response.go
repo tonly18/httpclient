@@ -26,13 +26,19 @@ func (r *HttpResponse) GetDataFromHeader(key string) string {
 	return r.Response.Header.Get(key)
 }
 
-func (r *HttpResponse) Cookie(name string) *http.Cookie {
-	for _, v := range r.Response.Cookies() {
-		if v.Name == name {
-			return v
+func (r *HttpResponse) GetCookie(names ...string) map[string]*http.Cookie {
+	data := make(map[string]*http.Cookie, len(names))
+
+	for _, cname := range names {
+		for _, v := range r.Response.Cookies() {
+			if v.Name == cname {
+				data[cname] = v
+				break
+			}
 		}
 	}
-	return nil
+
+	return data
 }
 
 func (r *HttpResponse) GetData() ([]byte, error) {
