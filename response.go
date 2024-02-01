@@ -47,6 +47,10 @@ func (r *HttpResponse) GetData() ([]byte, error) {
 		}
 	}()
 
+	if r.Response == nil {
+		return nil, errors.New("response is nil")
+	}
+
 	if r.Close {
 		return r.Data, nil
 	}
