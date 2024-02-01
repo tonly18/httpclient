@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"net/http/httptrace"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type HttpRequest struct {
@@ -13,7 +15,7 @@ type HttpRequest struct {
 	Method  string
 }
 
-func NewRequest(method, rawurl string, body []byte) (*HttpRequest, error) {
+func NewRequest(method, rawurl string, body []byte, debug bool) (*HttpRequest, error) {
 	var err error
 	var req *http.Request
 
@@ -27,6 +29,45 @@ func NewRequest(method, rawurl string, body []byte) (*HttpRequest, error) {
 	}
 	if len(body) > 0 {
 		req.Header.Set("Content-Length", strconv.Itoa(len(body)))
+	}
+
+	//trace
+	if debug {
+		trace := &httptrace.ClientTrace{
+			DNSStart: func(info httptrace.DNSStartInfo) {
+				nowtime := time.Now().String()
+				fmt.Println(nowtime, "dns start")
+			},
+			DNSDone: func(info httptrace.DNSDoneInfo) {
+				nowtime := time.Now().String()
+				fmt.Println(nowtime, "dns end")
+			},
+			ConnectStart: func(network, addr string) {
+				nowtime := time.Now().String()
+				fmt.Println(nowtime, "dial start")
+			},
+			ConnectDone: func(network, addr string, err error) {
+				nowtime := time.Now().String()
+				fmt.Println(nowtime, "dial end")
+			},
+			GotConn: func(connInfo httptrace.GotConnInfo) {
+				nowtime := time.Now().String()
+				fmt.Println(nowtime, "conn time")
+			},
+			WroteHeaders: func() {
+				nowtime := time.Now().String()
+				fmt.Println(nowtime, "wrote all request headers")
+			},
+			WroteRequest: func(wr httptrace.WroteRequestInfo) {
+				nowtime := time.Now().String()
+				fmt.Println(nowtime, "wrote all request")
+			},
+			GotFirstResponseByte: func() {
+				nowtime := time.Now().String()
+				fmt.Println(nowtime, "first received response byte")
+			},
+		}
+		req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
 	}
 
 	//return

@@ -64,6 +64,7 @@ func TestClientGet(t *testing.T) {
 		"user_id":   21,
 		"trace_id":  15821793512,
 	}).Do()
+	fmt.Println("err:::::", err)
 	data, err := resp.GetData()
 	fmt.Println("err:::::", err)
 	fmt.Println("resp:::::", string(data))

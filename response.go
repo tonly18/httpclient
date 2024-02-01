@@ -28,7 +28,6 @@ func (r *HttpResponse) GetDataFromHeader(key string) string {
 
 func (r *HttpResponse) GetCookie(names ...string) map[string]*http.Cookie {
 	data := make(map[string]*http.Cookie, len(names))
-
 	for _, cname := range names {
 		for _, v := range r.Response.Cookies() {
 			if v.Name == cname {
@@ -43,7 +42,7 @@ func (r *HttpResponse) GetCookie(names ...string) map[string]*http.Cookie {
 
 func (r *HttpResponse) GetData() ([]byte, error) {
 	defer func() {
-		if r.Response.Body != nil {
+		if r.Response != nil && r.Response.Body != nil {
 			r.Response.Body.Close()
 		}
 	}()
@@ -52,5 +51,5 @@ func (r *HttpResponse) GetData() ([]byte, error) {
 		return r.Data, nil
 	}
 
-	return nil, errors.New("response data happen error")
+	return nil, errors.New("get response data happen error")
 }

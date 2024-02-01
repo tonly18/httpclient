@@ -11,6 +11,7 @@ var rawclient *rawClient
 
 type rawClient struct {
 	client *http.Client
+	debug  bool
 }
 
 func NewClient(config *Config) *rawClient {
@@ -36,6 +37,7 @@ func NewClient(config *Config) *rawClient {
 				Jar:           config.Jar,
 				Timeout:       config.TimeOut, //从连接(Dial)到读完response body
 			},
+			debug: config.Debug,
 		}
 	})
 
@@ -46,7 +48,7 @@ func NewClient(config *Config) *rawClient {
 // GET请求
 func (c *rawClient) Get(rawurl string, params map[string]any) *httpClient {
 	rawurl = queryEncode(rawurl, params)
-	req, err := NewRequest(http.MethodGet, rawurl, nil)
+	req, err := NewRequest(http.MethodGet, rawurl, nil, c.debug)
 	if err != nil {
 		return nil
 	}
@@ -60,7 +62,7 @@ func (c *rawClient) Get(rawurl string, params map[string]any) *httpClient {
 
 // POST请求
 func (c *rawClient) Post(rawurl string, body []byte) *httpClient {
-	req, err := NewRequest(http.MethodPost, rawurl, body)
+	req, err := NewRequest(http.MethodPost, rawurl, body, c.debug)
 	if err != nil {
 		return nil
 	}
@@ -74,7 +76,7 @@ func (c *rawClient) Post(rawurl string, body []byte) *httpClient {
 
 // http请求
 func (c *rawClient) NewRequest(method, rawurl string, body []byte) *httpClient {
-	req, err := NewRequest(method, rawurl, body)
+	req, err := NewRequest(method, rawurl, body, c.debug)
 	if err != nil {
 		return nil
 	}

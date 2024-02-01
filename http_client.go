@@ -27,6 +27,8 @@ func (c *httpClient) AddCookie(cookies []*http.Cookie) *httpClient {
 
 func (c *httpClient) Do() (*HttpResponse, error) {
 	resp := c.DoNew()
+
+	//return
 	return resp, resp.Error
 }
 

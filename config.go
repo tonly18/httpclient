@@ -24,6 +24,7 @@ type Config struct {
 	CheckRedirect func(req *http.Request, via []*http.Request) error
 	Jar           http.CookieJar
 	TimeOut       time.Duration
+	Debug         bool //debug 模式
 }
 
 // http.Transport内都会维护一个自己的空闲连接池,如果每个client都创建一个新的http.Transport,就会导致底层的TCP连接无法复用.
