@@ -19,7 +19,10 @@ func NewHttpResponse(response *http.Response) *HttpResponse {
 }
 
 func (r *HttpResponse) GetHeaderCode() int {
-	return r.Response.StatusCode
+	if r.Response != nil {
+		return r.Response.StatusCode
+	}
+	return 0
 }
 
 func (r *HttpResponse) GetDataFromHeader(key string) string {
