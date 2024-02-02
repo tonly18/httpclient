@@ -26,7 +26,10 @@ func (r *HttpResponse) GetHeaderCode() int {
 }
 
 func (r *HttpResponse) GetDataFromHeader(key string) string {
-	return r.Response.Header.Get(key)
+	if r.Response != nil {
+		return r.Response.Header.Get(key)
+	}
+	return ""
 }
 
 func (r *HttpResponse) GetCookie(names ...string) map[string]*http.Cookie {
