@@ -52,7 +52,7 @@ func NewRequest(method, rawurl string, body []byte, debug bool) (*HttpRequest, e
 			},
 			GotConn: func(connInfo httptrace.GotConnInfo) {
 				nowtime := time.Now().String()
-				fmt.Println(nowtime, "conn time")
+				fmt.Println(nowtime, "conn time", connInfo)
 			},
 			WroteHeaders: func() {
 				nowtime := time.Now().String()
