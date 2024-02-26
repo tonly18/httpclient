@@ -140,7 +140,7 @@ func TestClientRequest(t *testing.T) {
 	//}
 	//bodyByte, _ := json.Marshal(body)
 
-	rawurl := "http://localhost:8080/n/v1/test/post?sex=3"
+	rawurl := "http://localhost:8080/n/v1/test/post?sex=3&age=18&test=x1"
 	httpClient := httpclient.NewClient(&httpclient.Config{})
 	resp, err := httpClient.NewRequest(http.MethodPost, rawurl, bodyByte).SetHeader(map[string]any{
 		//"content-type": "application/x-www-form-urlencoded",
@@ -152,6 +152,20 @@ func TestClientRequest(t *testing.T) {
 		"user_id":   21,
 		"trace_id":  15821793512,
 	}).Do()
+	if err != nil {
+		log.Fatal("err:::::::", err)
+	}
+	data, err := resp.GetData()
+	fmt.Println("err:::::", err)
+	fmt.Println("resp:::::", string(data))
+
+	fmt.Println("main")
+}
+
+func TestClientRequestHttps(t *testing.T) {
+	rawurl := "https://blog.csdn.net/Liing0/article/details/111241280?sex=3&age=18&test=x1"
+	httpClient := httpclient.NewClient(&httpclient.Config{})
+	resp, err := httpClient.Get(rawurl, map[string]any{"color": "red", "name": "tutu"}).Do()
 	if err != nil {
 		log.Fatal("err:::::::", err)
 	}

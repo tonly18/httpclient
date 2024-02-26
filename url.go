@@ -3,16 +3,23 @@ package httpclient
 import (
 	"fmt"
 	"net/url"
+	"strings"
 )
 
 // queryEncode
 func queryEncode(rawurl string, params map[string]any) string {
 	if len(params) > 0 {
-		urlArgs := url.Values{}
-		for k, v := range params {
-			urlArgs.Set(k, fmt.Sprintf(`%v`, v))
+		args := url.Values{}
+		if strings.Contains(rawurl, "?") {
+			urlInfo := strings.Split(rawurl, "?")
+			rawurl = urlInfo[0]
+			query := urlInfo[1]
+			args, _ = url.ParseQuery(query)
 		}
-		rawurl = fmt.Sprintf(`%v?%v`, rawurl, urlArgs.Encode())
+		for k, v := range params {
+			args.Set(k, fmt.Sprintf(`%v`, v))
+		}
+		rawurl = fmt.Sprintf(`%v?%v`, rawurl, args.Encode())
 	}
 
 	//return
