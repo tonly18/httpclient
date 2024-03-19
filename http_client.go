@@ -43,7 +43,16 @@ func (c *httpClient) DoNew() *HttpResponse {
 		}
 	}
 
-	//response
+	//response - nobody
+	if _, ok := noResponseBodyMethods[c.httpRequest.Method]; ok {
+		return &HttpResponse{
+			Response: resp,
+			Data:     nil,
+			Close:    true,
+		}
+	}
+
+	//response - body
 	rawBuffer := poolGet()
 	defer func() {
 		poolPut(rawBuffer)

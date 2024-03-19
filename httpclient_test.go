@@ -164,7 +164,9 @@ func TestClientRequest(t *testing.T) {
 
 func TestClientRequestHttps(t *testing.T) {
 	rawurl := "https://blog.csdn.net/qq_39852676/article/details/134129169?sex=3&age=18&test=x1"
-	httpClient := httpclient.NewClient(&httpclient.Config{})
+	httpClient := httpclient.NewClient(&httpclient.Config{
+		Debug: true,
+	})
 	resp, err := httpClient.Get(rawurl, map[string]any{"color": "red", "name": "tutu"}).Do()
 	if err != nil {
 		log.Fatal("err:::::::", err)

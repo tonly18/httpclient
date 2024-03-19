@@ -34,14 +34,34 @@ var transport = &http.Transport{
 		InsecureSkipVerify: true, //不校验服务端证书
 	},
 	DisableKeepAlives:     false,            //禁用keep-alive
-	MaxConnsPerHost:       2000,             //每个Host(IP:PORT元组)能创建的最大连接数(默认值:0)
-	MaxIdleConns:          100,              //最大空闲数量(默认值:100)
-	MaxIdleConnsPerHost:   1000,             //每个Host最大空闲数(能复用的链接数)(默认值:2)
-	IdleConnTimeout:       90 * time.Second, //连接空闲超时(默认值:90)
+	MaxConnsPerHost:       2000,             //(默认值:0)每个Host(IP:PORT元组)能创建的最大连接数
+	MaxIdleConns:          100,              //(默认值:100)最大空闲数量
+	MaxIdleConnsPerHost:   1000,             //(默认值:2)每个Host最大空闲数(能复用的链接数)
+	IdleConnTimeout:       90 * time.Second, //(默认值:90)连接空闲超时
 	DisableCompression:    true,             //禁止压缩
 	ExpectContinueTimeout: 1 * time.Second,  //(默认值:1)限制client在发送包含Expect:100-continue的header到收到继续发送body的response之间的时间等待
+	TLSHandshakeTimeout:   5 * time.Second,  //(默认值:10)TLS握手超时
 
+	//DialContext: defaultTransportDialContext(&net.Dialer{
+	//	Timeout:   30 * time.Second,
+	//	KeepAlive: 30 * time.Second,
+	//}),
 	//ResponseHeaderTimeout: 10 * time.Second,	//从client.request执行do之后,到server返回截至
 	//ForceAttemptHTTP2: true,             		//强制使用http2(默认值:true)
-	//TLSHandshakeTimeout:   10 * time.Second,  //TLS握手超时(默认值:10)
 }
+
+//func defaultTransportDialContext(dialer *net.Dialer) func(context.Context, string, string) (net.Conn, error) {
+//	return dialer.DialContext
+//}
+
+//func clonedTransport(rt http.RoundTripper) *http.Transport {
+//	t, ok := rt.(*http.Transport)
+//	if !ok {
+//		return nil
+//	}
+//	return t.Clone()
+//}
+//
+//func init() {
+//	trans := clonedTransport(http.DefaultTransport)
+//}
